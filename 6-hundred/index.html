@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Olli's Website</title>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600px" height="600px" style="border-width: 1px; border-style: solid"></canvas>
+        <script>
+            var canvas = document.getElementById("myCanvas");
+            canvas.onmousemove = function (e) {
+                clear();
+                drawEyes(e.clientX, e.clientY);
+            };
+            var context = canvas.getContext('2d');
+
+            var centerX = canvas.width / 2;
+            var centerY = canvas.height / 2;
+            var radius = 22;
+            var radiusPupil = 8;
+            var distance = 10;
+
+            function drawEyes(mouseX, mouseY) {
+                var x = 0, y = 0;
+                for (var i = 1; i <= 10; i++) {
+                    y = 0;
+                    x += 2 * radius + distance;
+                    for (var k = 1; k <= 10; k++) {
+                        y += 2 * radius + distance;
+                        drawEye(x, y, mouseX, mouseY);
+                    }
+                }
+            }
+
+            function scale(mouse, total, eye) {
+                var maxDistance;
+                if (mouse < eye) {
+                    maxDistance = eye;
+                } else {
+                    maxDistance = total - eye;
+
+                }
+                return ( mouse - eye ) / maxDistance;
+            }
+
+            function drawEye(x, y, mouseX, mouseY) {
+                // eye
+                drawCircle(x, y, radius);
+
+                var outerPupilRadius = radius - radiusPupil - 10;
+
+                var scaleX = scale( mouseX, canvas.width, x );
+                var scaleY = scale( mouseY, canvas.height, y );
+                var offsetX = scaleX * outerPupilRadius;
+                var offsetY = scaleY * outerPupilRadius;
+
+                // pupil
+                drawCircle(x + offsetX, y + offsetY, radiusPupil, true);
+            }
+
+            function drawCircle(x, y, radius, filled) {
+                context.beginPath();
+                context.arc(x, y, radius, 0, 2 * Math.PI, false);
+                if (filled) {
+                    context.fillStyle = "#000000";
+                    context.fill();
+                } else {
+                    context.strokeStyle = '#000000';
+                    context.lineWidth = 4;
+                    context.stroke();
+                }
+                context.closePath();
+            }
+
+            function clear() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+        </script>
+    </body>
+</html>
